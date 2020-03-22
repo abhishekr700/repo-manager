@@ -69,6 +69,8 @@ def readJSON(filename):
     print(Fore.GREEN + "=> JSON Data loaded successfully")
     return data
 
+
+
 # Generate URL from username,repo-name and repo privacy
 def createUrl(name,repoType):
     if repoType == "public":
@@ -104,26 +106,33 @@ def processCredentials(data):
 # FEATURES
 #############
 
+# Clone a single repository
+def clone(item, dir):
+    repoParentPath = None
+    # Create parent DIR
+    if dir is None:
+        repoParentPath = Path(item['path'])
+        repoParentPath.mkdir(parents=True, exist_ok=True)
+    else:
+        repoParentPath = Path(dir).joinpath(item['path'])
+        repoParentPath.mkdir(parents=True, exist_ok=True)
+
+    url = createUrl(item['name'], item['type'])
+    cmd = createCommand(item['name'], url, item['path'])
+    
+    print("")
+    print(Fore.GREEN + "=> Cloning " + item['name'])
+    print(Fore.CYAN+cmd)
+    execCommandLive(cmd, dir)
+
 # Clone the repositories
-def clone(data, dir = None):
+def cloneAll(data, dir = None):
     if "data" not in data:
         print(Fore.RED + "data key missing")
         sys.exit(2)
 
     for item in data["data"]:
-        # Create parent DIR
-        if dir is None:
-            pathlib.Path(item['path']).mkdir(parents=True, exist_ok=True)
-        else:
-            pathlib.Path(dir).joinpath(item['path']).mkdir(parents=True, exist_ok=True)
-
-        url = createUrl(item['name'], item['type'])
-        cmd = createCommand(item['name'], url, item['path'])
-        
-        print("")
-        print(Fore.GREEN + "=> Cloning " + item['name'])
-        print(Fore.CYAN+cmd)
-        execCommandLive(cmd, dir)
+        clone(item, dir)
     
     print("")
     print(Fore.GREEN + "=> All repositories have been cloned")
@@ -178,9 +187,12 @@ def sync(data):
     for item in data["data"]:
         # Create parent DIR
         path = pathlib.Path(item['path']).joinpath(item['name'])
-        
-        # print("")
         print(Fore.GREEN + "\n• " + item['name'] + "  ", end="\n")
+        if not path.exists():
+            print(Fore.RED + "Repository {} was not found !".format(item['name']))
+            continue
+        # print("")
+        
         process1 = subprocess.run("git pull", cwd=str(path))
         process2 = subprocess.run("git push", cwd=str(path))
     
@@ -242,8 +254,20 @@ def setup(filename):
     shutil.copy(str(filePath), str(workspaceConfigPath))
 
     # Start the clones
-    clone(data, workspacePath)
+    cloneAll(data, workspacePath)
 
+def checkWorkspace():
+    path = Path.cwd()
+    configPath = path.joinpath(".gitsync")
+    if not configPath.exists():
+        print(Fore.RED + "Not a GitSync Workspace: Hidden directory not found")
+        sys.exit(3)
+    
+    files = ["repos.json"]
+    for i in files:
+        if not configPath.joinpath(i).exists():
+            print(Fore.RED + "Not a GitSync Workspace: File .gitsync/{} not found".format(i))
+            sys.exit(3)
 
 # Define Global Variables
 username=""
@@ -254,35 +278,53 @@ password=""
 # print(Fore.BLUE + "Username: " + username)
 # print(Fore.BLUE + "Password: " + password)
 
-# clean(data)
-# clone(data)
+
 print(sys.argv)
 
 # main function, execution starts here
 def main():    
 
+    # Setup Command
     if sys.argv[1] == "setup":
-        if sys.argv.__len__ == 3:
+        print(len(sys.argv))
+        if len(sys.argv) == 3:
             setup(sys.argv[2])
+            sys.exit(0)
         else:
             print(Fore.RED + "Setup needs json file name as argument")
             sys.exit(3)
+
+    # Help command
+    if sys.argv[1] == "help":
+        print("GitSync - A tool for keeping multiple git repositores under sync & organised\n")
+        print("Usage: python test.py setup | list | status | pnp | cnc")
+        print("")
+        print("setup - Setups the workspace using the JSON file")
+        print("list - List the repositories managed by this tool")
+        print("status - Check for uncommited work in the repositories")
+        print("sync - Goto each repository and do a git pull followed by a git push")
+        print("cnc - Clean & re-clone all repositories")
+        print("help - Print this help")
+        sys.exit(0)
     
+    checkWorkspace()
     data = readJSON(".gitsync/repos.json")
     
     checkJSON(data)
     processCredentials(data)
 
+    # Other commands
     if sys.argv[1] == "list":
         listRepos(data)
     elif sys.argv[1] == "status":
         status(data)
-    elif sys.argv[1] == "pnp":
+    elif sys.argv[1] == "sync":
         sync(data)
+    elif sys.argv[1] == "cnc":
+        clean(data)
+        cloneAll(data)
     else:
-        print("GitSync - A tool for keeping multiple git repositores under sync & organised")
-        print("setup | list | status | pnp")
-        print("setup - Setups the workspace using the JSON file")
+        print("Invalid Argument")
 
 
 # Start The Magic #
