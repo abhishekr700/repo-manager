@@ -283,14 +283,14 @@ password=""
 # print(Fore.BLUE + "Password: " + password)
 
 
-print(sys.argv)
+# print(sys.argv)
 
 # main function, execution starts here
 def main():    
 
     # Setup Command
     if sys.argv[1] == "setup":
-        print(len(sys.argv))
+        # print(len(sys.argv))
         if len(sys.argv) == 3:
             setup(sys.argv[2])
             sys.exit(0)
