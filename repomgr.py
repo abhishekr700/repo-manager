@@ -169,7 +169,7 @@ def status(data):
         
         # print("")
         print(Fore.GREEN + "• " + item['name'] + "  ", end="")
-        process = subprocess.run("git status --porcelain=v2", cwd=str(path), capture_output=True)
+        process = subprocess.run("git status --porcelain=v2", cwd=str(path), capture_output=True, shell=True)
         if process.stdout != b'':
             print("❌")
         else:
@@ -196,8 +196,8 @@ def sync(data):
             continue
         # print("")
         
-        process1 = subprocess.run("git pull", cwd=str(path))
-        process2 = subprocess.run("git push", cwd=str(path))
+        process1 = subprocess.run("git pull", cwd=str(path), shell=True)
+        process2 = subprocess.run("git push", cwd=str(path), shell=True)
     
     print("")
     print(Fore.GREEN + "=> All repositories have been synced")
