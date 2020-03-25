@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env python3
 
 # Modules needed
 import json
@@ -109,7 +109,7 @@ def processCredentials(data):
 #############
 
 # Clone a single repository
-def clone(item, dir):
+def clone(item, dir=None):
     repoParentPath = None
     # Create parent DIR
     if dir is None:
@@ -187,11 +187,12 @@ def sync(data):
     print(Fore.GREEN + "=> Syncing up repositories. This will do a pull & a push but doesn't handle any merge conflicts.")
 
     for item in data["data"]:
-        # Create parent DIR
+        # Link to parent DIR
         path = pathlib.Path(item['path']).joinpath(item['name'])
         print(Fore.GREEN + "\n• " + item['name'] + "  ", end="\n")
         if not path.exists():
-            print(Fore.RED + "Repository {} was not found !".format(item['name']))
+            print(Fore.RED + "Repository {} was not found ! Cloning it !".format(item['name']))
+            clone(item)
             continue
         # print("")
         
