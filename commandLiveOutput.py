@@ -14,11 +14,11 @@ import shlex
 # rc = process.poll()
 
 def execCommandLive(cmd, dir = None):
-    print("Exec Command: ",cmd,dir)
+    print("Exec Command: ",cmd,"Directory: ",dir)
     if dir is None:
-        process = subprocess.Popen(shlex.split(cmd),shell=False,stdout=subprocess.PIPE)
+        process = subprocess.Popen(cmd,shell=False,stdout=subprocess.PIPE)
     else:
-        process = subprocess.Popen(shlex.split(cmd),shell=True,stdout=subprocess.PIPE, cwd=dir)
+        process = subprocess.Popen(cmd,shell=True,stdout=subprocess.PIPE, cwd=dir)
 
     all = ""
     # Poll process.stdout to show stdout live
