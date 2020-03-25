@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # Modules needed
 import json
 import pathlib
@@ -248,7 +250,7 @@ def setup(filename):
     Path(foldername).joinpath(".gitsync").mkdir(parents=True, exist_ok=True)
     
     # Copy JSON init file to config directory
-    workspaceConfigPath = Path(foldername).joinpath(".gitsync")
+    workspaceConfigPath = Path(foldername).joinpath(".gitsync").joinpath("repos.json")
     filePath = Path(filename)
     print("=> Copying JSON to workspace")
     shutil.copy(str(filePath), str(workspaceConfigPath))
