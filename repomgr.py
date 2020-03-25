@@ -259,6 +259,7 @@ def setup(filename):
     # Start the clones
     cloneAll(data, workspacePath)
 
+# Check if command is run in a workspace set up by this script
 def checkWorkspace():
     path = Path.cwd()
     configPath = path.joinpath(".gitsync")
