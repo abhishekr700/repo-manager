@@ -1,0 +1,24 @@
+{
+    "savedCreds": "0",
+    "credentials": {
+        "username": "username",
+        "password": "password#"
+    },
+    "data": [
+        {
+            "name": "OnlineAuction",
+            "type": "public",
+            "path": "01WebProjects"
+        },
+        {
+            "name": "videojs-demo",
+            "type": "public",
+            "path":"01WebProjects"
+        },
+        {
+            "name": "Chat-Server-Client",
+            "type": "public",
+            "path": "03CPP-Stuff/01Projects"
+        }
+    ]
+}
