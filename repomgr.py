@@ -169,11 +169,11 @@ def status(data):
         
         # print("")
         print(Fore.GREEN + "• " + item['name'] + "  ", end="")
-        process = subprocess.run("git status --porcelain=v2", cwd=str(path), capture_output=True, shell=True)
+        process = subprocess.run(["git", "status", "--porcelain=v2"], cwd=str(path), stdout=subprocess.PIPE)
         if process.stdout != b'':
-            print("❌")
+            print("❌ Uncommited Work")
         else:
-            print("✅")
+            print("✅ OK")
     
     print("")
     # print(Fore.GREEN + "=> All repositories have been cloned")
