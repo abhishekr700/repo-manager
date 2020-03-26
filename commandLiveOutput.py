@@ -17,9 +17,9 @@ def execCommandLive(cmd, dir = None):
     print("Exec Command: ",cmd,"Directory: ",dir)
     print("Tokenized:", shlex.split(cmd))
     if dir is None:
-        process = subprocess.Popen(shlex.split(cmd),shell=True,stdout=subprocess.PIPE)
+        process = subprocess.Popen(shlex.split(cmd),shell=False,stdout=subprocess.PIPE)
     else:
-        process = subprocess.Popen(shlex.split(cmd),shell=True,stdout=subprocess.PIPE, cwd=dir)
+        process = subprocess.Popen(shlex.split(cmd),shell=False,stdout=subprocess.PIPE, cwd=dir)
 
     all = ""
     # Poll process.stdout to show stdout live
